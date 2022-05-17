@@ -126,13 +126,15 @@ settings in the board's .dts file. Multiple files may be listed, e.g. \
 DTC_OVERLAY_FILE=\"dts1.overlay dts2.overlay\"")
 
 if(DEFINED SNIPPETS)
-  # Search for (required) ${SNIPPET}.overlay files
+  # Search for (required) ${SNIPPET}.overlay and (optional) ${SNIPPET}.cmake files
   foreach(SNIPPET IN LISTS SNIPPETS_RAW_LIST)
     # Application level board snippets have precedence
     if(EXISTS     ${APPLICATION_SOURCE_DIR}/${BOARD}/snippets/${SNIPPET}.overlay)
       string(APPEND DTC_OVERLAY_FILE " ${APPLICATION_SOURCE_DIR}/${BOARD}/snippets/${SNIPPET}.overlay")
+      include(${APPLICATION_SOURCE_DIR}/${BOARD}/snippets/${SNIPPET}.cmake OPTIONAL NO_POLICY_SCOPE)
     elseif(EXISTS ${BOARD_DIR}/snippets/${SNIPPET}.overlay)
       string(APPEND DTC_OVERLAY_FILE " ${BOARD_DIR}/snippets/${SNIPPET}.overlay")
+      include(${BOARD_DIR}/snippets/${SNIPPET}.cmake OPTIONAL NO_POLICY_SCOPE)
     else()
       message(FATAL_ERROR "Snippet ${SNIPPET} does not exist in ${APPLICATION_SOURCE_DIR}/${BOARD}/snippets or ${BOARD_DIR}/snippets")
     endif()
